@@ -21,6 +21,7 @@ class AppBarExample extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tasks'),
+        backgroundColor: Colors.red,
       ),
       body: const Center(
         child: Text(
@@ -29,32 +30,49 @@ class AppBarExample extends StatelessWidget {
         ),
       ),
       drawer: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the drawer if there isn't enough vertical
-        // space to fit everything.
         child: ListView(
-          // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text(
-                'Tasks Menu',
-                style: TextStyle(fontSize: 30),
-                textAlign: TextAlign.center,
+            const SizedBox(
+              height: 120,
+              child: DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                ),
+                child: Text(
+                  'Menu',
+                  style: TextStyle(
+                    fontSize: 30,
+                    color: Colors.white,
+                    ),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.add),
-              title: const Text("New list"),
+              leading: const Icon(Icons.star),
+              title: const Text("Leave a rating!"),
               onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
                 Navigator.pop(context);
               },
+            ),
+            ListTile(
+              leading: const Icon(Icons.attach_money),
+              title: const Text("Donate"),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text("Settings"),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            const Text(
+              "Note that those buttons don't have a functionality yet!",
+              textAlign: TextAlign.center,
             ),
           ],
         ),
