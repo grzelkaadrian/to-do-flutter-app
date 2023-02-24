@@ -27,6 +27,7 @@ class AppBarWidget extends StatelessWidget {
       ),
       body: const BodyWidget(),
       drawer: const DrawerWidget(),
-    );
+      );
   }
 }
+
