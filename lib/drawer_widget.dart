@@ -21,6 +21,7 @@ class DrawerWidget extends StatelessWidget {
                 'Menu',
                 style: TextStyle(
                   fontSize: 30,
+                  fontWeight: FontWeight.w400,
                   color: Colors.white,
                   ),
                 textAlign: TextAlign.center,
@@ -42,7 +43,7 @@ class DrawerWidget extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.attach_money),
+            leading: const Icon(Icons.favorite),
             title: const Text("Donate"),
             onTap: () {
               Navigator.pop(context);

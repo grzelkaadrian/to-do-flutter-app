@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
-import 'to_do_list.dart';
+import 'to_do_object.dart';
 
 class ToDoItem extends StatelessWidget {
-  final ToDo todo;
-  final dynamic onToDoChanged;
+  final ToDoObject todo;
+  final dynamic onChange;
   final dynamic onDeleteItem;
 
   const ToDoItem({
     Key? key,
     required this.todo,
-    required this.onToDoChanged,
+    required this.onChange,
     required this.onDeleteItem,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: const BoxDecoration(border: Border(bottom: BorderSide(width: 0.5))),
       margin: const EdgeInsets.only(bottom: 20),
       child: ListTile(
         onTap: () {
-          onToDoChanged(todo);
+          onChange(todo);
         },
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
         tileColor: Colors.white,
@@ -28,7 +29,7 @@ class ToDoItem extends StatelessWidget {
           color: Colors.red,
         ),
         title: Text(
-          todo.todoText!,
+          todo.taskName!,
           style: TextStyle(
             fontSize: 16,
             color: Colors.black,

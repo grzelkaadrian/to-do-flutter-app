@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'to_do_list.dart';
+import 'to_do_object.dart';
 import 'to_do_item.dart';
 
 class BodyWidget extends StatefulWidget {
@@ -10,9 +10,9 @@ class BodyWidget extends StatefulWidget {
 }
 
 class _BodyWidgetState extends State<BodyWidget> {
-  final todosList = ToDo.todoList();
-  List<ToDo> foundToDo = [];
-  final _todoController = TextEditingController();
+  final todosList = ToDoObject.todoList();
+  List<ToDoObject> foundToDo = [];
+  final _textController = TextEditingController();
 
   @override
   void initState() {
@@ -31,6 +31,7 @@ class _BodyWidgetState extends State<BodyWidget> {
           ),
           child: Column(
             children: [
+              searchBox(),
               Expanded(
                 child: ListView(
                   children: [
@@ -40,18 +41,18 @@ class _BodyWidgetState extends State<BodyWidget> {
                         bottom: 20,
                       ),
                       child: const Text(
-                        'Tasks left:',
+                        'Tasks left to do:',
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
-                    for (ToDo todo in foundToDo.reversed)
+                    for (ToDoObject todo in foundToDo.reversed)
                       ToDoItem(
                         todo: todo,
-                        onToDoChanged: _handleToDoChange,
-                        onDeleteItem: _deleteToDoItem,
+                        onChange: _handleChange,
+                        onDeleteItem: _deleteItem,
                       ),
                   ],
                 ),
@@ -86,7 +87,7 @@ class _BodyWidgetState extends State<BodyWidget> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
-                  controller: _todoController,
+                  controller: _textController,
                   decoration: const InputDecoration(
                       hintText: 'Add a new item', border: InputBorder.none),
                 ),
@@ -99,12 +100,24 @@ class _BodyWidgetState extends State<BodyWidget> {
               ),
               child: ElevatedButton(
                   onPressed: () {
-                    _addToDoItem(_todoController.text);
+                    if (_textController.text.isNotEmpty) {
+                      _addItem(_textController.text);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Colors.black,
+                          content: Text(
+                            'Please enter a valid name!',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                            ),
+                          ),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     shape: const CircleBorder(),
                     backgroundColor: Colors.red,
-                    minimumSize: const Size(60, 60),
+                    minimumSize: const Size(50, 50),
                     elevation: 10,
                   ),
                   child: const Icon(Icons.add)),
@@ -115,25 +128,65 @@ class _BodyWidgetState extends State<BodyWidget> {
     );
   }
 
-  void _handleToDoChange(ToDo todo) {
+  void _handleChange(ToDoObject chosenItem) {
     setState(() {
-      todo.isDone = !todo.isDone;
+      chosenItem.isDone = !chosenItem.isDone;
     });
   }
 
-  void _deleteToDoItem(String id) {
+  void _deleteItem(String id) {
     setState(() {
       todosList.removeWhere((item) => item.id == id);
     });
   }
 
-  void _addToDoItem(String toDo) {
+  void _addItem(String inputName) {
     setState(() {
-      todosList.add(ToDo(
+      todosList.add(ToDoObject(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
-        todoText: toDo,
+        taskName: inputName,
       ));
     });
-    _todoController.clear();
+    _textController.clear();
+  }
+
+  void _runFilter(String enteredKeyword) {
+    List<ToDoObject> results = [];
+    if (enteredKeyword.isEmpty) {
+      results = todosList;
+    } else {
+      results = todosList
+          .where((item) => item.taskName!
+              .toLowerCase()
+              .contains(enteredKeyword.toLowerCase()))
+          .toList();
+    }
+
+    setState(() {
+      foundToDo = results;
+    });
+  }
+
+  Widget searchBox() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: TextField(
+        onChanged: (value) => _runFilter(value),
+        decoration: const InputDecoration(
+          prefixIcon: Icon(
+            Icons.search,
+            color: Colors.red,
+            size: 20,
+          ),
+          prefixIconConstraints: BoxConstraints(
+            maxHeight: 20,
+            minWidth: 25,
+          ),
+          border: InputBorder.none,
+          hintText: 'Search',
+          hintStyle: TextStyle(color: Colors.grey),
+        ),
+      ),
+    );
   }
 }
